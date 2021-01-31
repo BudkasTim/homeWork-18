@@ -2,22 +2,18 @@
 const CACHE_NAME = "static-cache-v2";
 const DATA_CACHE_NAME = "data-cache-v1";
 
-const iconSizes = ["72", "96", "128", "144", "152", "192", "384", "512"];
-const iconFiles = iconSizes.map(
-  (size) => `/public/icons/icon-${size}x${size}.png`
-);
 
 const staticFilesToPreCache = [
   "/",
+  "/index.html",
   "/index.js",
-  "/manifest.webmanifest",
   "/index.js",
   "/db.js",
   "/style.css",
-].concat(iconFiles);
+];
 
 
-// install
+// install worker
 self.addEventListener("install", function(evt) {
   evt.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
@@ -29,7 +25,7 @@ self.addEventListener("install", function(evt) {
   self.skipWaiting();
 });
 
-// activate
+// activate workers
 self.addEventListener("activate", function(evt) {
   evt.waitUntil(
     caches.keys().then(keyList => {
@@ -47,7 +43,7 @@ self.addEventListener("activate", function(evt) {
   self.clients.claim();
 });
 
-// fetch
+// fetch files
 self.addEventListener("fetch", function(evt) {
   const {url} = evt.request;
   if (url.includes("/all") || url.includes("/find")) {
